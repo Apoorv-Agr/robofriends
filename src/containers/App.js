@@ -3,6 +3,8 @@ import CardList from "../components/CardList";
 // import { robots } from "../robots";
 import SearchBox from "../components/SearchBox";
 import Scroll from "../components/Scroll";
+import { setSearchField } from "../actions";
+import { connect } from "react-redux";
 import "./App.css";
 
 class App extends Component {
@@ -10,10 +12,10 @@ class App extends Component {
     super();
     this.state = {
       robots: [],
-      searchField: "",
     };
   }
   componentDidMount = () => {
+    console.log("this.props.store : ", this.props);
     fetch("https://jsonplaceholder.typicode.com/users")
       .then((res) => {
         return res.json();
@@ -23,16 +25,15 @@ class App extends Component {
       });
   };
   onSearchChange = (event) => {
-    this.setState({
-      searchField: event.target.value,
-    });
+    this.props.onSearchChangeAction(event.target.value);
   };
   render() {
-    const { robots, searchField } = this.state;
+    const { robots } = this.state;
+    const { searchField } = this.props;
     const filterRobots = robots.filter((robot) => {
       return robot.name.toLowerCase().includes(searchField.toLowerCase());
     });
-    if (this.state.robots.length === 0) {
+    if (!robots.length) {
       return (
         <div className="tc">
           <h1 className="f2">LOADING...</h1>
@@ -44,7 +45,7 @@ class App extends Component {
           <h1 className="f2">RobotFriends</h1>
           <SearchBox
             searchChange={this.onSearchChange}
-            searchField={this.state.searchField}
+            searchField={searchField}
           />
           <Scroll>
             <CardList robots={filterRobots} />
@@ -65,4 +66,23 @@ class App extends Component {
   );
 }; */
 
-export default App;
+const mapActionToProps = {
+  onSearchChangeAction: setSearchField,
+};
+
+/* const mapDispatchToProps = (dispatch) => {
+  return {
+    onSearchChange: (event) => {
+      dispatch(setSearchField(event.target.value));
+    },
+  };
+}; */
+
+const mapStateToProps = (state) => {
+  console.log("state : ", state);
+  return {
+    searchField: state.searchRobotsReducer.searchField,
+  };
+};
+
+export default connect(mapStateToProps, mapActionToProps)(App);
