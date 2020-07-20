@@ -2,13 +2,15 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./containers/App";
 import { Provider } from "react-redux";
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
+import { createLogger } from "redux-logger";
 import "./index.css";
 import "tachyons";
 import * as serviceWorker from "./serviceWorker";
 import searchRobots from "./reducer";
 
-const store = createStore(searchRobots);
+const logger = createLogger();
+const store = createStore(searchRobots, applyMiddleware(logger));
 
 ReactDOM.render(
   <React.StrictMode>

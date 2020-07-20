@@ -15,7 +15,7 @@ class App extends Component {
     };
   }
   componentDidMount = () => {
-    console.log("this.props.store : ", this.props);
+    // console.log("this.props.store : ", this.props);
     fetch("https://jsonplaceholder.typicode.com/users")
       .then((res) => {
         return res.json();
@@ -79,7 +79,7 @@ const mapActionToProps = {
 }; */
 
 const mapStateToProps = (state) => {
-  console.log("state : ", state);
+  // console.log("state : ", state);
   return {
     searchField: state.searchRobotsReducer.searchField,
   };

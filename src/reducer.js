@@ -7,7 +7,7 @@ const initialState = {
 };
 
 const searchRobotsReducer = (state = initialState, action = {}) => {
-  console.log("in reducer : ", action, " state : ", state);
+  // console.log("in reducer : ", action, " state : ", state);
 //   debugger;
   switch (action.type) {
     case CHANGE_SEARCH_FIELD:
