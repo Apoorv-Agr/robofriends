@@ -3,37 +3,25 @@ import CardList from "../components/CardList";
 // import { robots } from "../robots";
 import SearchBox from "../components/SearchBox";
 import Scroll from "../components/Scroll";
-import { setSearchField } from "../actions";
+import { setSearchField, getRobotsData } from "../actions";
 import { connect } from "react-redux";
 import "./App.css";
 
 class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      robots: [],
-    };
-  }
   componentDidMount = () => {
-    // console.log("this.props.store : ", this.props);
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((res) => {
-        return res.json();
-      })
-      .then((jsonResp) => {
-        this.setState({ robots: jsonResp });
-      });
+    this.props.getRobotsDataAction();
   };
   onSearchChange = (event) => {
-    this.props.onSearchChangeAction(event.target.value);
+    this.props.onSearchChangeAction(event);
   };
   render() {
-    const { robots } = this.state;
-    const { searchField } = this.props;
+    // const { robots } = this.state;
+    const { searchField, isPending, robots } = this.props;
     const filterRobots = robots.filter((robot) => {
       return robot.name.toLowerCase().includes(searchField.toLowerCase());
     });
-    if (!robots.length) {
+
+    if (isPending) {
       return (
         <div className="tc">
           <h1 className="f2">LOADING...</h1>
@@ -67,22 +55,25 @@ class App extends Component {
 }; */
 
 const mapActionToProps = {
-  onSearchChangeAction: setSearchField,
+  // getRobotsDataAction : getRobotsData
 };
 
-/* const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    onSearchChange: (event) => {
-      dispatch(setSearchField(event.target.value));
+    getRobotsDataAction: () => {
+      dispatch(getRobotsData());
     },
+    onSearchChangeAction: (event) =>
+      dispatch(setSearchField(event.target.value)),
   };
-}; */
+};
 
 const mapStateToProps = (state) => {
-  // console.log("state : ", state);
   return {
     searchField: state.searchRobotsReducer.searchField,
+    isPending: state.getRobotsReducer.isPending,
+    robots: state.getRobotsReducer.data,
   };
 };
 
-export default connect(mapStateToProps, mapActionToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
